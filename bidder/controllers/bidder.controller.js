@@ -4,11 +4,11 @@ const causeDelay = async () => {
   return new Promise((resolve) => setTimeout(resolve, app.locals.DELAY));
 };
 
-const getBidValue = () => {
+const getPrice = () => {
   return Math.random() * 100;
 };
 
 export default async (req, res) => {
   await causeDelay();
-  res.status(200).json({ bidValue: getBidValue(), bidderId: app.locals.BIDDER_ID });
+  res.status(200).json({ price: getPrice(), bidderId: app.locals.BIDDER_ID });
 };

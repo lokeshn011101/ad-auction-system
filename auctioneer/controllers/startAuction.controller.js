@@ -8,7 +8,7 @@ export default async (req, res) => {
     return;
   }
   let bidPromises = [];
-  let defaultBidder = { bidValue: Number.NEGATIVE_INFINITY, bidderId: null };
+  let defaultBidder = { price: Number.NEGATIVE_INFINITY, bidderId: null };
 
   const bidders = await redisClient.hGetAll(app.locals.AUCTIONEER_ID);
   Object.keys(bidders).map((bidderId) => {
@@ -16,10 +16,10 @@ export default async (req, res) => {
     bidPromises.push(makePromiseWithTimeout(axios.get(bidderUrl), defaultBidder));
   });
 
-  const bids = (await Promise.all(bidPromises)).filter((bid) => bid.bidValue && bid.bidderId);
+  const bids = (await Promise.all(bidPromises)).filter((bid) => bid.price && bid.bidderId);
   const maximumBidder = bids.length
     ? bids.reduce((previousBid, currentBid) =>
-        previousBid.bidValue > currentBid.bidValue ? previousBid : currentBid
+        previousBid.price > currentBid.price ? previousBid : currentBid
       )
     : {};
   if (!maximumBidder.bidderId) res.status(204).json({ comment: "Deadline exceeded from bidders" });
