@@ -1,0 +1,21 @@
+version: "3.9"
+services:
+  auctioneer:
+    build: .
+    container_name: auctioneer
+    command: npm start -- --port=5000 --id=a1
+    volumes:
+      - .:/home/lokesh/Projects/ad-auction-system/auctioneer/
+      - /home/lokesh/Projects/ad-auction-system/auctioneer/node_modules
+    ports:
+      - 5000:5000
+    depends_on:
+      - redis
+  redis:
+    image: redis
+    ports:
+      - 6379:6379
+networks:
+  default:
+    name: myNetwork
+    external: true

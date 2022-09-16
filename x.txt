@@ -1,0 +1,34 @@
+version: "2"
+services:
+  auctioneer:
+    build: .
+    command: npm start --prefix ./auctioneer -- --port=5000 --id=a1
+    volumes:
+      - .:/home/lokesh/Projects/ad-auction-system/auctioneer/
+      - /home/lokesh/Projects/ad-auction-system/auctioneer/node_modules
+    ports:
+      - 5000:5000
+    depends_on:
+      - redis
+    expose:
+      - 5000
+  bidder:
+    build: .
+    command: npm start --prefix ./bidder -- --port=3000 --delay=195 --auctioneerURL=http://auctioneer:5000/ --id=b1
+    volumes:
+      - .:/home/lokesh/Projects/ad-auction-system/bidder/
+      - /home/lokesh/Projects/ad-auction-system/bidder/node_modules
+    ports:
+      - 3000:3000
+  redis:
+    image: redis
+    ports:
+      - 6379:6379
+      
+FROM node:16
+WORKDIR /
+COPY ./bidder/package.json ./bidder/package.json
+COPY ./auctioneer/package.json ./auctioneer/package.json
+RUN npm install --prefix ./bidder
+RUN npm install --prefix ./auctioneer
+COPY . .
