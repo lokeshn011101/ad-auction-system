@@ -2,13 +2,13 @@ version: "3.9"
 services:
   bidder:
     build: .
-    command: npm start -- --port=3000 --delay=195 --auctioneerURL=http://auctioneer:5000/ --id=b1
+    command: npm start -- --port=${PORT} --delay=${DELAY} --auctioneerURL=${AUCTIONEER_URL} --id=${BIDDER_ID}
     volumes:
       - .:/home/lokesh/Projects/ad-auction-system/bidder/
       - /home/lokesh/Projects/ad-auction-system/bidder/node_modules
     ports:
-      - 3000:3000
+      - ${PORT}:${PORT}
 networks:
   default:
-    name: myNetwork
+    name: ${BRIDGE_NETWORK_NAME}
     external: true
